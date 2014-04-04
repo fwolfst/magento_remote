@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'magento_remote'
+
+options = {}
+
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: magento_add_to_cart [OPTIONS]"
+
+  opts.separator ""
+  opts.separator "Magento shop options"
+
+  opts.on('-u', '--customer USER', 'customer/username of shop.') do |u|
+    options[:user] = u
+  end
+  opts.on('-p', '--password PASSWORD', 'password of customer account.') do |p|
+    options[:pass] = p
+  end
+  opts.on('-b', '--base-uri URI', 'base URI of shop.') do |b|
+    options[:base_uri] = b
+  end
+
+  opts.separator ""
+  opts.separator "General options"
+
+  opts.on_tail('--version', 'Show version.') do
+    puts "magento_add_to_cart #{MagentoRemote::VERSION}"
+    exit 0
+  end
+  opts.on('-h', '--help', 'Show help.') do
+    puts opts
+    exit 0
+  end
+end
+
+optparse.parse!
+
+if !options[:user] || !options[:pass] || !options[:base_uri]
+  STDERR.puts "Error: You have to define user, pass and base_uri"
+  exit 1
+end
+
+MagentoMech.from_config options
+
+exit 0
