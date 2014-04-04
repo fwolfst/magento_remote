@@ -22,7 +22,7 @@ Call
 
     magento_add_to_cart -u customerlogin -p customerpassword -b https://theshop -w productid -q quantity -c
 
-to put <quantity> of the product with <productid> in your shopping cart.
+to put *quantity* of the product with *productid* in your shopping cart.
 
 Note that you should work with
 
