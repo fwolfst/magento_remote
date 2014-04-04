@@ -40,7 +40,7 @@ optparse = OptionParser.new do |opts|
     options[:show_cart] = true
   end
 
-  opts.on('-d', '--debug FILE', 'enable debugging output, to FILE if given') do |d|
+  opts.on('-d', '--debug FILE', 'enable debugging output, STDOUT, or FILE if given') do |d|
     if d
       options[:debug] = d
     else
