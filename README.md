@@ -1,6 +1,6 @@
 # MagentoRemote
 
-TODO: Write a gem description
+Interact with a specific but defaultish Magento shop via its webpage.
 
 ## Installation
 
@@ -18,7 +18,21 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Call 
+
+    magento_add_to_cart -u customerlogin -p customerpassword -b https://theshop -w productid -q quantity -c
+
+to put <quantity> of the product with <productid> in your shopping cart.
+
+Note that you should work with
+
+    bundle exec
+
+and
+
+    bundle console
+
+while developing.
 
 ## Contributing
 
