@@ -3,6 +3,7 @@
 require 'optparse'
 require 'magento_remote'
 
+# Sweet, sweet options.
 options = {}
 
 optparse = OptionParser.new do |opts|
@@ -19,6 +20,32 @@ optparse = OptionParser.new do |opts|
   end
   opts.on('-b', '--base-uri URI', 'base URI of shop.') do |b|
     options[:base_uri] = b
+  end
+
+  opts.separator ""
+  opts.separator "Product options"
+
+  opts.on('-w', '--product-id PRODUCTID', 'product id of product to put in cart.') do |p|
+    options[:product_id] = p
+  end
+
+  opts.on('-q', '--quantity QUANTITY', 'quantity of product to put in cart.') do |q|
+    options[:quantity] = q
+  end
+
+  opts.separator ""
+  opts.separator "Output options"
+
+  opts.on('-c', '--show-cart', 'show cart contents afterwards') do |c|
+    options[:show_cart] = true
+  end
+
+  opts.on('-d', '--debug FILE', 'enable debugging output, to FILE if given') do |d|
+    if d
+      options[:debug] = d
+    else
+      options[:debug] = true
+    end
   end
 
   opts.separator ""
@@ -41,6 +68,24 @@ if !options[:user] || !options[:pass] || !options[:base_uri]
   exit 1
 end
 
-MagentoMech.from_config options
+mech = MagentoMech.from_config options
+if options[:debug] == true
+  mech.log_to! STDOUT
+elsif options[:debug]
+  mech.log_to! options[:debug]
+end
+
+mech.login
+
+if mech.add_to_cart options[:product_id], options[:quantity]
+  puts "INFO: Succeeded in adding to cart"
+else
+  STDERR.puts "ERROR: Something went wrong."
+end
+
+if options[:show_cart]
+  puts "Current Cart Content"
+  puts mech.get_cart_content.map {|c| "#{c[1]} #{c[0]}"}
+end
 
 exit 0
