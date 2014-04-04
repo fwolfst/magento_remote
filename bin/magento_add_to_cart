@@ -75,12 +75,15 @@ elsif options[:debug]
   mech.log_to! options[:debug]
 end
 
+return_code = 0
+
 mech.login
 
 if mech.add_to_cart options[:product_id], options[:quantity]
   puts "INFO: Succeeded in adding to cart"
 else
   STDERR.puts "ERROR: Something went wrong."
+  return_code = 3
 end
 
 if options[:show_cart]
@@ -88,4 +91,4 @@ if options[:show_cart]
   puts mech.get_cart_content.map {|c| "#{c[1]} #{c[0]}"}
 end
 
-exit 0
+exit return_code
