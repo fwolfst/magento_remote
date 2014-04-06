@@ -80,4 +80,27 @@ class MagentoMech
     form.fields.find{|f| f.name == 'login[password]'}.value = password
     @mech.submit(form)
   end
+
+  # Search a product
+  # Arguments
+  #   search_string: sku, name or title, urlencoded for get request.
+  # returns [[product_id1, sku1, name1],[product_id2...]...] or nil if not found.
+  def find_product search_string
+    @mech.get("#{@base_uri}/catalogsearch/result?q=#{search_string}")
+    return nil
+  end
+
+  private
+
+  # Construct path relative to base uri.
+  # Example:
+  #   base uri is http://zentimental.net
+  #   relative_url 'index.html' # => http://zentimental.net/index.html
+  def relative_url path
+    if @base_uri.end_with?('/') && !path.start_with?('/')
+      @base_uri + '/' + path
+    else
+      @base_uri + path
+    end
+  end
 end
