@@ -33,6 +33,10 @@ optparse = OptionParser.new do |opts|
     options[:quantity] = q
   end
 
+  opts.on('-a', '--as-many-as-possible', 'try to order as many as possible.') do
+    options[:amap] = true
+  end
+
   opts.separator ""
   opts.separator "Output options"
 
@@ -68,6 +72,16 @@ if !options[:user] || !options[:pass] || !options[:base_uri]
   exit 1
 end
 
+if !options[:product_id] || !options[:quantity]
+  STDERR.puts "Error: You have to specify product_id and quantity."
+  exit 1
+end
+
+if options[:quantity].to_i < 1
+  STDERR.puts "Error: Quantity to put in cart has to be > 0."
+  exit 1
+end
+
 mech = MagentoMech.from_config options
 if options[:debug] == true
   mech.log_to! STDOUT
@@ -79,11 +93,23 @@ return_code = 0
 
 mech.login
 
-if mech.add_to_cart options[:product_id], options[:quantity]
-  puts "INFO: Succeeded in adding to cart"
+if options[:amap]
+  qty = mech.add_to_cart! options[:product_id], options[:quantity]
+  if qty == options[:quantity]
+    puts "INFO: Succeeded in adding to cart"
+  elsif qty > 0
+    puts "INFO: #{options[:quantity]} items not available, added #{qty}."
+  else
+    STDERR.puts "ERROR: Something went wrong, probably product not in stock."
+    return_code = 4
+  end
 else
-  STDERR.puts "ERROR: Something went wrong."
-  return_code = 3
+  if mech.add_to_cart options[:product_id], options[:quantity]
+    puts "INFO: Succeeded in adding to cart"
+  else
+    STDERR.puts "ERROR: Something went wrong."
+    return_code = 3
+  end
 end
 
 if options[:show_cart]
