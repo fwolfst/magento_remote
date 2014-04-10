@@ -81,7 +81,7 @@ class MagentoMech
     @mech.submit(form)
   end
 
-  # Search a or many product(s).
+  # Search products.
   # Arguments
   #   search_string: sku, name or title, urlencoded for get request.
   # returns [[name1, product_id1, instock?1],[name2, p_id2...]...]
