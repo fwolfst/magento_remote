@@ -24,6 +24,12 @@ Call
 
 to put *quantity* of the product with *productid* in your shopping cart.
 
+    magento_find_product -b https://theshop -s isearchforthisword
+
+to display a table of matching products.
+
+Note that both scripts show you information about possible parameters when invoked with `--help`.
+
 Note that you should work with
 
     bundle exec
