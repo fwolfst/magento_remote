@@ -92,27 +92,21 @@ class MagentoMech
 
     product_li = @mech.page.search('.equal-height .item')
 
-    if product_li.empty?
-      return nil
-    end
+    return nil if product_li.empty?
 
-    products = []
-    stock = false
-    product_li.each do |product|
+    products = product_li.map do |product|
       # Add to cart button is missing if out of stock.
-      button = product.search("button")[0]
-      if button
-        stock = true
-      end
+      buttons = product.search("button")
+      stock = buttons && !buttons[0].nil?
+
       # Find product ID from wishlist link.
       wishlist_link = product.search("ul li a")[0]
-      if wishlist_link
-        wishlist_link.attributes['href'].value[/product\/(\d+)/]
-        pid = $1
-      else
-        pid = nil
-      end
-      products << [product.search('h2')[0].text, pid, stock]
+      wishlist_link.attributes['href'].value[/product\/(\d+)/]
+      pid = $1
+
+      # Find name from heading.
+      name = product.search('h2')[0].text
+      [name, pid, stock]
     end
 
     return products
