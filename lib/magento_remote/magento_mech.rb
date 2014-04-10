@@ -81,13 +81,41 @@ class MagentoMech
     @mech.submit(form)
   end
 
-  # Search a product
+  # Search a or many product(s).
   # Arguments
   #   search_string: sku, name or title, urlencoded for get request.
-  # returns [[product_id1, sku1, name1],[product_id2...]...] or nil if not found.
+  # returns [[name1, product_id1, instock?1],[name2, p_id2...]...]
+  #   or nil if not found.
   def find_product search_string
-    @mech.get("#{@base_uri}/catalogsearch/result?q=#{search_string}")
-    return nil
+    url = relative_url("/catalogsearch/result/index/?limit=all&q=#{search_string}")
+    @mech.get url
+
+    product_li = @mech.page.search('.equal-height .item')
+
+    if product_li.empty?
+      return nil
+    end
+
+    products = []
+    stock = false
+    product_li.each do |product|
+      # Add to cart button is missing if out of stock.
+      button = product.search("button")[0]
+      if button
+        stock = true
+      end
+      # Find product ID from wishlist link.
+      wishlist_link = product.search("ul li a")[0]
+      if wishlist_link
+        wishlist_link.attributes['href'].value[/product\/(\d+)/]
+        pid = $1
+      else
+        pid = nil
+      end
+      products << [product.search('h2')[0].text, pid, stock]
+    end
+
+    return products
   end
 
   private
