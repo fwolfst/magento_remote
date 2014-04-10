@@ -61,6 +61,15 @@ class MagentoMech
     return !result_page.search('.success-msg span').empty?
   end
 
+  # Puts as many items of given product to cart as possible
+  # Returns number of items put to cart.
+  def add_to_cart! product_id, qty
+    while qty.to_i > 0 && !add_to_cart(product_id, qty)
+      qty = qty.to_i - 1
+    end
+    qty
+  end
+
   # Get the current carts contents
   def get_cart_content
     cart_page = @mech.get("#{@base_uri}/checkout/cart/")
