@@ -28,7 +28,11 @@ to put *quantity* of the product with *productid* in your shopping cart.
 
 to display a table of matching products.
 
-Note that both scripts show you information about possible parameters when invoked with `--help`.
+    magento_scrape -b https://theshop -l limit -s startpid
+
+to display *limit* number of products, starting with product id of *startpid*.
+
+Note that all scripts show you information about possible parameters when invoked with `--help`.
 
 Note that you should work with
 
