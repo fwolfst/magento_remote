@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'terminal-table'
+require 'magento_remote'
+
+# Sweet, sweet options.
+options = {}
+
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: magento_scrape [OPTIONS]\n  Find product(s) in shop."
+
+  opts.separator ""
+  opts.separator "Magento shop options"
+
+  opts.on('-b', '--base-uri URI', 'base URI of shop.') do |b|
+    options[:base_uri] = b
+  end
+
+  opts.separator ""
+  opts.separator "Product options"
+
+  opts.on('-s', '--start PRODUCT_ID', 'Product ID from which to start scraping') do |s|
+    options[:start_pid] = s
+  end
+
+  opts.on('-l', '--limit LIMIT', 'Maximum number of product_ids to scrape') do |l|
+    options[:limit] = l
+  end
+
+  opts.separator ""
+  opts.separator "Output options"
+
+  opts.on('-d', '--debug FILE', 'enable debugging output, STDOUT, or FILE if given') do |d|
+    if d
+      options[:debug] = d
+    else
+      options[:debug] = true
+    end
+  end
+
+  opts.separator ""
+  opts.separator "General options"
+
+  opts.on_tail('--version', 'Show version.') do
+    puts "magento_scrape #{MagentoRemote::VERSION}"
+    exit 0
+  end
+  opts.on('-h', '--help', 'Show help.') do
+    puts opts
+    exit 0
+  end
+end
+
+optparse.parse!
+
+if !options[:base_uri]
+  STDERR.puts "Error: You have to define base_uri"
+  exit 1
+end
+
+mech = MagentoMech.from_config options
+if options[:debug] == true
+  mech.log_to! STDOUT
+elsif options[:debug]
+  mech.log_to! options[:debug]
+end
+
+return_code = 0
+
+options[:start_pid] ||= 0
+
+matches = mech.scrape_products options[:start_pid].to_i, options[:limit].to_i
+if matches.nil?
+  puts "Nothing found"
+else
+  puts Terminal::Table.new :headings => ['Name', 'Product ID', 'In stock?'], :rows => matches
+end
+
+exit return_code

@@ -67,7 +67,7 @@ class MagentoMech
     while qty.to_i > 0 && !add_to_cart(product_id, qty)
       qty = qty.to_i - 1
     end
-    qty
+    qty.to_i
   end
 
   # Get the current carts contents
@@ -116,6 +116,35 @@ class MagentoMech
       # Find name from heading.
       name = product.search('h2')[0].text
       [name, pid, stock]
+    end
+
+    return products
+  end
+
+  def find_product_id_from url
+    page = @mech.get url
+    r_pid = page.search(".//input[@name='product']")[0][:value]
+    r_name = page.search(".product-name .roundall")
+    [r_pid, r_name.text]
+  end
+
+  # Search/scrape products.
+  # Arguments
+  #   limit: Maximum number of product_ids to check
+  #   start_pid: With which product id to start scraping
+  # returns [[name1, product_id1, instock?1],[name2, p_id2...]...]
+  #   or nil if not found.
+  def scrape_products start_pid, limit
+    products = []
+    limit.times do |idx|
+      url = relative_url("/catalog/product/view/id/#{start_pid + idx + 1}")
+      @mech.get url rescue next
+      #if @mech.response_code
+      product_name = @mech.page.search('.product-name .roundall')[0].text
+      wishlist_link = @mech.page.search(".link-wishlist")[0]
+      wishlist_link.attributes['href'].value[/product\/(\d+)/]
+      pid = $1
+      products << [product_name, pid]
     end
 
     return products
