@@ -81,6 +81,7 @@ if options[:quantity].to_i < 1
   STDERR.puts "Error: Quantity to put in cart has to be > 0."
   exit 1
 end
+options[:quantity] = options[:quantity].to_i
 
 mech = MagentoMech.from_config options
 if options[:debug] == true
@@ -95,7 +96,7 @@ mech.login
 
 if options[:amap]
   qty = mech.add_to_cart! options[:product_id], options[:quantity]
-  if qty == options[:quantity]
+  if qty == options[:quantity].to_i
     puts "INFO: Succeeded in adding to cart"
   elsif qty > 0
     puts "INFO: #{options[:quantity]} items not available, added #{qty}."
