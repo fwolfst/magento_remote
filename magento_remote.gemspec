@@ -18,8 +18,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'mechanize'
-  spec.add_dependency 'terminal-table'
+  spec.add_dependency 'mechanize', "~> 2.7"
+  spec.add_dependency 'terminal-table', "~> 1.4"
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
