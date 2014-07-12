@@ -1,3 +1,3 @@
 module MagentoRemote
-  VERSION = "0.1.2-pre".freeze
+  VERSION = "0.1.2".freeze
 end
