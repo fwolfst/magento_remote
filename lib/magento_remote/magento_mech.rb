@@ -64,10 +64,27 @@ class MagentoMech
   # Puts as many items of given product to cart as possible
   # Returns number of items put to cart.
   def add_to_cart! product_id, qty
+    # Try to be a bit clever and early find out whether article
+    # is out of stock.
+    if add_to_cart(product_id, qty)
+      return qty
+    end
+    num_ordered = 0
+    # Apparently not enough in stock!
+
+    if qty.to_i > 4
+      if !add_to_cart(product_id, 1)
+        # out of stock
+        return 0
+      else
+        num_ordered = 1
+        qty = qty.to_i - 1
+      end
+    end
     while qty.to_i > 0 && !add_to_cart(product_id, qty)
       qty = qty.to_i - 1
     end
-    qty.to_i
+    qty.to_i + num_ordered
   end
 
   # Get the current carts contents
@@ -134,6 +151,7 @@ class MagentoMech
   #   start_pid: With which product id to start scraping
   # returns [[name1, product_id1, instock?1],[name2, p_id2...]...]
   #   or nil if not found.
+  # yielding would be nice
   def scrape_products start_pid, limit
     products = []
     limit.times do |idx|
@@ -145,6 +163,9 @@ class MagentoMech
       wishlist_link.attributes['href'].value[/product\/(\d+)/]
       pid = $1
       products << [product_name, pid]
+      if block_given?
+        yield [product_name, pid]
+      end
     end
 
     return products
