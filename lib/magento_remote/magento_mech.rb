@@ -178,11 +178,8 @@ class MagentoMech
   def last_order_products
     orders_url = relative_url("/customer/account/")
     @mech.get orders_url
-    #@mech.page.save_as "orders_page.html"
     order_url = @mech.page.search('.a-center a').first.attributes['href']
-    puts "order_url #{order_url}"
     @mech.get order_url
-    @mech.page.save_as "order_page.html"
     @mech.page.search('tr.border').map do |tr|
       product_name = tr.children[1].children[0].content
       product_sku = tr.children[3].children[0].content
