@@ -171,6 +171,26 @@ class MagentoMech
     return products
   end
 
+  # Get products of last order.
+  # Arguments
+  # returns [[product_name1, product_sku1, qty_ordered1],[name2, sku2...]...]
+  #   or empty list if not found.
+  def last_order_products
+    orders_url = relative_url("/customer/account/")
+    @mech.get orders_url
+    #@mech.page.save_as "orders_page.html"
+    order_url = @mech.page.search('.a-center a').first.attributes['href']
+    puts "order_url #{order_url}"
+    @mech.get order_url
+    @mech.page.save_as "order_page.html"
+    @mech.page.search('tr.border').map do |tr|
+      product_name = tr.children[1].children[0].content
+      product_sku = tr.children[3].children[0].content
+      product_qty = tr.children[7].children[1].content[/\d/]
+      [product_name, product_sku, product_qty]
+    end
+  end
+
   private
 
   # Construct path relative to base uri.
