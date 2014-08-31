@@ -23,6 +23,7 @@ class MagentoMech
     @mech = Mechanize.new
     @mech.user_agent = 'RawBot, Felix sends the Mech.'
     @base_uri = base_uri
+    @mech.agent.allowed_error_codes = [429]
   end
 
   # Log to given file (-like object).
@@ -67,6 +68,7 @@ class MagentoMech
     # Try to be a bit clever and early find out whether article
     # is out of stock.
     if add_to_cart(product_id, qty)
+      # to_i
       return qty
     end
     num_ordered = 0
@@ -101,7 +103,7 @@ class MagentoMech
   def login_with username, password
     login_page = @mech.get("#{@base_uri}/customer/account/login/")
 
-    form = login_page.form_with(:action => "#{@base_uri}/customer/account/loginPost/")
+    form = login_page.form_with(:action => '#', :method => 'POST')
     form.fields.find{|f| f.name == 'login[username]'}.value = username
     form.fields.find{|f| f.name == 'login[password]'}.value = password
     @mech.submit(form)
