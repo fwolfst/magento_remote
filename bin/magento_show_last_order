@@ -8,7 +8,7 @@ require 'magento_remote'
 options = {}
 
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: magento_list_order [OPTIONS]\n  Show last order."
+  opts.banner = "Usage: magento_show_last_order [OPTIONS]\n  Show last order."
 
   opts.separator ""
   opts.separator "Magento shop options"
