@@ -176,6 +176,16 @@ class MagentoMech
     return products
   end
 
+  # Return list [date, volume, link] of last orders
+  def last_orders
+    orders_url = relative_url("/customer/account/")
+    @mech.get orders_url
+    @mech.page.search('#my-orders-table tbody tr').map do |order_row|
+      row_columns = order_row.search("td")
+      [row_columns[1].text, row_columns[3].text, row_columns[5].search("a").first[:href]]
+    end
+  end
+
   # Get products of last order.
   # Arguments
   # returns [[product_name1, product_sku1, qty_ordered1],[name2, sku2...]...]
