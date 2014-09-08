@@ -13,9 +13,9 @@ class MagentoMech
   # Argument conf
   #   values :base_uri, :user, :pass.
   def self.from_config(conf)
-    client = MagentoMech.new(conf[:base_uri])
-    client.user = conf[:user]
-    client.pass = conf[:pass]
+    client = MagentoMech.new(conf[:base_uri] || conf['base_uri'])
+    client.user = conf[:user] || conf['user']
+    client.pass = conf[:pass] || conf['pass']
     client
   end
 
