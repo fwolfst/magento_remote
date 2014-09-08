@@ -13,6 +13,13 @@ optparse = OptionParser.new do |opts|
   opts.banner = "Usage: #{program_name} [OPTIONS]\n  Show last order."
 
   opts.separator ""
+  opts.separator "Order options"
+
+  opts.on("-o", '--order-id ORDERID', 'order id in shop.') do |o|
+    options[:order_id] = o
+  end
+
+  opts.separator ""
   opts.separator "Magento shop options"
 
   opts.on('-u', '--customer USER', 'customer/username of shop.') do |u|
@@ -67,7 +74,12 @@ return_code = 0
 
 mech.login
 
-products =  mech.last_order_products
+if options[:order_id]
+  products = mech.products_from_order options[:order_id]
+else
+  products = mech.last_order_products
+end
+
 if products.empty?
   puts "Nothing found"
 else
