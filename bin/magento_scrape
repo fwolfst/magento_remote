@@ -3,12 +3,14 @@
 require 'optparse'
 require 'terminal-table'
 require 'magento_remote'
+require 'bin_helper'
 
 # Sweet, sweet options.
 options = {}
+program_name = File.basename __FILE__
 
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: magento_scrape [OPTIONS]\n  Find product(s) in shop."
+  opts.banner = "Usage: #{program_name} [OPTIONS]\n  Find product(s) in shop."
 
   opts.separator ""
   opts.separator "Magento shop options"

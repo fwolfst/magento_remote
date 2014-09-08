@@ -13,17 +13,7 @@ optparse = OptionParser.new do |opts|
   opts.banner = "Usage: #{program_name} [OPTIONS]\n  Show last order."
 
   opts.separator ""
-  opts.separator "Magento shop options"
-
-  opts.on('-u', '--customer USER', 'customer/username of shop.') do |u|
-    options[:user] = u
-  end
-  opts.on('-p', '--password PASSWORD', 'password of customer account.') do |p|
-    options[:pass] = p
-  end
-  opts.on('-b', '--base-uri URI', 'base URI of shop.') do |b|
-    options[:base_uri] = b
-  end
+  MagentoRemote::CLI::Options::add_shop_options opts, options
 
   opts.separator ""
   opts.separator "Output options"
@@ -51,10 +41,8 @@ end
 
 optparse.parse!
 
-if !options[:user] || !options[:pass] || !options[:base_uri]
-  STDERR.puts "Error: You have to define user, pass and base_uri"
-  exit 1
-end
+# Exit if not all obligatory params given.
+MagentoRemote::CLI::Options::exit_obligatory! options
 
 mech = MagentoMech.from_config options
 if options[:debug] == true
@@ -67,11 +55,11 @@ return_code = 0
 
 mech.login
 
-products =  mech.last_order_products
-if products.empty?
+orders =  mech.last_orders
+if orders.empty?
   puts "Nothing found"
 else
-  puts Terminal::Table.new :headings => ['Name', 'Product SKU', 'Quantity ordered'], :rows => products
+  puts Terminal::Table.new :headings => ['Date', 'Volume', 'link'], :rows => orders
 end
 
 exit return_code

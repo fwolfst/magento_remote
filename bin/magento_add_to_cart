@@ -2,12 +2,14 @@
 
 require 'optparse'
 require 'magento_remote'
+require 'bin_helper'
 
 # Sweet, sweet options.
 options = {}
+program_name = File.basename __FILE__
 
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: magento_add_to_cart [OPTIONS]"
+  opts.banner = "Usage: #{program_name} [OPTIONS]"
 
   opts.separator ""
   opts.separator "Magento shop options"
