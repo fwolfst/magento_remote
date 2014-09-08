@@ -7,6 +7,7 @@ require 'logger'
 class MagentoMech
   attr_accessor :user
   attr_accessor :pass
+  attr_accessor :base_uri
 
   # Create Mech from hash
   # Argument conf
