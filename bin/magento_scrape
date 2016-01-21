@@ -18,7 +18,7 @@ optparse = OptionParser.new do |opts|
   opts.on('-b', '--base-uri URI', 'base URI of shop.') do |b|
     options[:base_uri] = b
   end
-  opts.on('-w', '--wait SECONDS', 'SECONDS to wait after each request (default: 0)') do |b|
+  opts.on('-w', '--wait SECONDS', Float, 'SECONDS to wait after each request (default: 0)') do |b|
     options[:sleep_time] = b
   end
 
