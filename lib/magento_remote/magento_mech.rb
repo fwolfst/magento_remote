@@ -162,7 +162,13 @@ class MagentoMech
     limit.times do |idx|
       url = relative_url("/catalog/product/view/id/#{start_pid + idx + 1}")
       @mech.get url rescue next
-      #if @mech.response_code
+
+      if @mech.page.code == '429'
+        # Too many requests! Sleep and try again,
+        sleep 2
+        @mech.get url # rescue raise
+      end
+
       product_name = @mech.page.search('.product-name .roundall')[0].text
       wishlist_link = @mech.page.search(".link-wishlist")[0]
       wishlist_link.attributes['href'].value[/product\/(\d+)/]
