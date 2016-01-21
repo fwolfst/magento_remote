@@ -162,7 +162,13 @@ class MagentoMech
     products = []
     limit.times do |idx|
       url = relative_url("/catalog/product/view/id/#{start_pid + idx + 1}")
-      @mech.get url rescue next
+      begin
+        @mech.get url
+      rescue
+        # This is probably a 404
+        sleep sleep_time
+        next
+      end
 
       if @mech.page.code == '429'
         # Too many requests! Sleep and try again,
