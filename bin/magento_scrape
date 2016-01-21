@@ -18,6 +18,9 @@ optparse = OptionParser.new do |opts|
   opts.on('-b', '--base-uri URI', 'base URI of shop.') do |b|
     options[:base_uri] = b
   end
+  opts.on('-w', '--wait SECONDS', 'SECONDS to wait after each request (default: 0)') do |b|
+    options[:sleep_time] = b
+  end
 
   opts.separator ""
   opts.separator "Product options"
@@ -71,8 +74,9 @@ end
 return_code = 0
 
 options[:start_pid] ||= 0
+options[:sleep_time] ||= 0
 
-matches = mech.scrape_products options[:start_pid].to_i, options[:limit].to_i
+matches = mech.scrape_products(options[:start_pid].to_i, options[:limit].to_i, options[:sleep_time])
 if matches.nil?
   puts "Nothing found"
 else

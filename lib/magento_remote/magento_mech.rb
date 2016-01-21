@@ -154,10 +154,11 @@ class MagentoMech
   # Arguments
   #   limit: Maximum number of product_ids to check
   #   start_pid: With which product id to start scraping
+  #   sleep_time: Time to sleep after each try
   # returns [[name1, product_id1, instock?1],[name2, p_id2...]...]
   #   or nil if not found.
   # yielding would be nice
-  def scrape_products start_pid, limit
+  def scrape_products start_pid, limit, sleep_time=0
     products = []
     limit.times do |idx|
       url = relative_url("/catalog/product/view/id/#{start_pid + idx + 1}")
@@ -177,6 +178,7 @@ class MagentoMech
       if block_given?
         yield [product_name, pid]
       end
+      sleep sleep_time
     end
 
     return products
