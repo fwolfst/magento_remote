@@ -58,7 +58,7 @@ optparse = OptionParser.new do |opts|
   opts.separator "General options"
 
   opts.on_tail('--version', 'Show version.') do
-    puts "magento_add_to_cart #{MagentoRemote::VERSION}"
+    puts "#{program_name} #{MagentoRemote::VERSION}"
     exit 0
   end
   opts.on('-h', '--help', 'Show help.') do
