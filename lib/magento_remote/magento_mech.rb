@@ -26,6 +26,10 @@ class MagentoMech
     #@mech.user_agent = ''
     @base_uri = base_uri
     @mech.agent.allowed_error_codes = [429]
+
+    @mech.keep_alive = false
+    @mech.open_timeout = 5
+    @mech.read_timeout = 5
   end
 
   # Log to given file (-like object).
