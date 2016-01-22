@@ -32,10 +32,13 @@ class MagentoMech
     @mech.read_timeout = 5
   end
 
-  # Log to given file (-like object).
-  def log_to! file
-    puts @mech.log
-    @mech.log = Logger.new file
+  # Log to given file (-like object) or use logger.
+  def log_to! file_or_logger
+    if file_or_logger.is_a? Logger
+      @mech.log = file_or_logger
+    else
+      @mech.log = Logger.new file_or_logger
+    end
   end
 
   # Login to webpage
