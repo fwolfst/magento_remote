@@ -180,7 +180,11 @@ class MagentoMech
       if @mech.page.code == '429'
         # Too many requests! Sleep and try again,
         sleep 2
-        @mech.get url # rescue raise
+
+        @mech.get url rescue next
+        if @mech.page.code == '429'
+          raise "Remote Web Server reports too many requests"
+        end
       end
 
       product_name = @mech.page.search('.product-name .roundall')[0].text
