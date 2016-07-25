@@ -23,6 +23,9 @@ optparse = OptionParser.new do |opts|
   opts.on('-b', '--base-uri URI', 'base URI of shop.') do |b|
     options[:base_uri] = b
   end
+  opts.on('-f', '--form-token FORM_TOKEN', 'base-64 encoded URL to be used as form token (magento >= 1.8).') do |f|
+    options[:form_token] = f
+  end
 
   opts.separator ""
   opts.separator "Product options"
@@ -99,7 +102,7 @@ return_code = 0
 mech.login
 
 if options[:amap]
-  qty = mech.add_to_cart! options[:product_id], options[:quantity]
+  qty = mech.add_to_cart! options[:product_id], options[:quantity], options[:form_token]
   if qty == options[:quantity].to_i
     puts "INFO: Succeeded in adding to cart"
   elsif qty > 0
@@ -109,7 +112,7 @@ if options[:amap]
     return_code = 4
   end
 else
-  if mech.add_to_cart options[:product_id], options[:quantity]
+  if mech.add_to_cart options[:product_id], options[:quantity], options[:form_token]
     puts "INFO: Succeeded in adding to cart"
   else
     STDERR.puts "ERROR: Something went wrong."

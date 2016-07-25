@@ -1,5 +1,6 @@
 require 'mechanize'
 require 'logger'
+require 'json'
 
 # The Mech Driver, interacting with a Magento shop page.
 # Note that the Mech does not keep too much state, you have to
@@ -46,10 +47,32 @@ class MagentoMech
     login_with @user, @pass
   end
 
+  # See add_to_cart for more notes
+  def ajax_add_to_cart product_id, qty, form_token
+    if product_id.nil? || qty.to_i <= 0 || form_token.nil?
+      fail "Empty obligatory parameter"
+    end
+
+    url = "#{@base_uri}/checkout/cart/add?product=#{product_id}&qty=#{qty}"
+    result_page = @mech.post "#{@base_uri}/checkout/cart/add/uenc/#{form_token}/product/#{product_id}/?isajaxcart=true&groupmessage=1&minicart=1&ajaxlinks=1",
+      {product: product_id,
+       qty: qty}
+
+    result = JSON.parse result_page.content
+    return !result["outStock"]
+  end
+
   # Put stuff in the cart.
+  # Use the form_token for magento >= 1.8 (or form token enforcing magento
+  # installations), otherwise leave it nil.
+  #
   # Returns true if succeeded, false otherwise.
-  def add_to_cart product_id, qty
+  def add_to_cart product_id, qty, form_token=nil
     fail "Empty obligatory parameter" if product_id.nil? || qty.to_i <= 0
+
+    if !form_token.nil?
+      return ajax_add_to_cart(product_id, qty, form_token)
+    end
     url = "#{@base_uri}/checkout/cart/add?product=#{product_id}&qty=#{qty}"
 
     # Check the returned page name
@@ -73,10 +96,10 @@ class MagentoMech
 
   # Puts as many items of given product to cart as possible
   # Returns number of items put to cart.
-  def add_to_cart! product_id, qty
+  def add_to_cart! product_id, qty, form_token=nil
     # Try to be a bit clever and early find out whether article
     # is out of stock.
-    if add_to_cart(product_id, qty)
+    if add_to_cart(product_id, qty, form_token)
       # to_i
       return qty
     end
@@ -84,7 +107,7 @@ class MagentoMech
     # Apparently not enough in stock!
 
     if qty.to_i > 4
-      if !add_to_cart(product_id, 1)
+      if !add_to_cart(product_id, 1, form_token)
         # out of stock
         return 0
       else
