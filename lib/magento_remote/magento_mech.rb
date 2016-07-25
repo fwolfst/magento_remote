@@ -99,6 +99,7 @@ class MagentoMech
   end
 
   # Get the current carts contents
+  # Returns [[name, qty], [name2, qty2] ... ]
   def get_cart_content
     cart_page = @mech.get("#{@base_uri}/checkout/cart/")
     name_links = cart_page.search('td h2 a')
