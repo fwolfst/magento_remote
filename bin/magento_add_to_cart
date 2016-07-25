@@ -71,6 +71,8 @@ optparse.parse!
 
 if !options[:user] || !options[:pass] || !options[:base_uri]
   STDERR.puts "Error: You have to define user, pass and base_uri"
+  puts
+  puts optparse
   exit 1
 end
 
