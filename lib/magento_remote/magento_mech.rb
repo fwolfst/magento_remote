@@ -280,6 +280,7 @@ class MagentoMech
   # Example:
   #   base uri is http://zentimental.net
   #   relative_url 'index.html' # => http://zentimental.net/index.html
+  #   # TODO use more, and use URI.join
   def relative_url path
     if @base_uri.end_with?('/') && !path.start_with?('/')
       @base_uri + '/' + path
