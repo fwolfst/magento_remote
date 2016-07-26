@@ -119,7 +119,7 @@ class MagentoMech
         qty = qty.to_i - 1
       end
     end
-    while qty.to_i > 0 && !add_to_cart(product_id, qty)
+    while qty.to_i > 0 && !add_to_cart(product_id, qty, form_token)
       qty = qty.to_i - 1
     end
     qty.to_i + num_ordered
