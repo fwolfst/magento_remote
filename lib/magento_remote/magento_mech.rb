@@ -83,6 +83,8 @@ class MagentoMech
     # There are multiple reasons of failure:
     #   * product_id unknown
     #   * product out of stock
+    #   * product does not exist (unhandled response (Mechanize::ResponseCodeError)
+    #   )
 
     # There are multiple ways to detect failure:
     #   * contains a form with post action ending on product/#{product_id}/
