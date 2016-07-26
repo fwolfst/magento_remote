@@ -1,6 +1,7 @@
 require 'mechanize'
 require 'logger'
 require 'json'
+require 'uri'
 
 # The Mech Driver, interacting with a Magento shop page.
 # Note that the Mech does not keep too much state, you have to
@@ -53,8 +54,9 @@ class MagentoMech
       fail "Empty obligatory parameter"
     end
 
-    url = "#{@base_uri}/checkout/cart/add?product=#{product_id}&qty=#{qty}"
-    result_page = @mech.post "#{@base_uri}/checkout/cart/add/uenc/#{form_token}/product/#{product_id}/?isajaxcart=true&groupmessage=1&minicart=1&ajaxlinks=1",
+    url = URI.join @base_uri, "checkout/cart/add/uenc/#{form_token}/"\
+      "product/#{product_id}/?isajaxcart=true&groupmessage=1&minicart=1&ajaxlinks=1"
+    result_page = @mech.post url,
       {product: product_id,
        qty: qty}
 
@@ -73,7 +75,7 @@ class MagentoMech
     if !form_token.nil?
       return ajax_add_to_cart(product_id, qty, form_token)
     end
-    url = "#{@base_uri}/checkout/cart/add?product=#{product_id}&qty=#{qty}"
+    url = URI.join @base_uri, "checkout/cart/add?product=#{product_id}&qty=#{qty}"
 
     # Check the returned page name
     result_page = @mech.get url
@@ -124,7 +126,7 @@ class MagentoMech
   # Get the current carts contents
   # Returns [[name, qty], [name2, qty2] ... ]
   def get_cart_content
-    cart_page = @mech.get("#{@base_uri}/checkout/cart/")
+    cart_page = @mech.get(URI.join @base_uri, "checkout/cart/")
     name_links = cart_page.search('td h2 a')
     names = name_links.map &:text
     quantities_inputs = cart_page.search('.qty')
@@ -134,11 +136,11 @@ class MagentoMech
 
   # Login with given credentials
   def login_with username, password
-    login_page = @mech.get("#{@base_uri}/customer/account/login/")
+    login_page = @mech.get(URI.join @base_uri, "customer/account/login/")
 
     # Probably we could just send the POST directly.
     form = login_page.form_with(:action => "#", :method => 'POST')
-    form.action = "#{@base_uri}/customer/account/loginPost/"
+    form.action = URI.join @base_uri, "customer/account/loginPost/"
     form.fields.find{|f| f.name == 'login[username]'}.value = username
     form.fields.find{|f| f.name == 'login[password]'}.value = password
     @mech.submit(form)
