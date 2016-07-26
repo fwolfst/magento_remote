@@ -125,6 +125,12 @@ class MagentoMech
     qty.to_i + num_ordered
   end
 
+  # Login and get the current carts contents
+  def get_cart_content!
+    login
+    get_cart_content
+  end
+
   # Get the current carts contents
   # Returns [[name, qty], [name2, qty2] ... ]
   def get_cart_content
