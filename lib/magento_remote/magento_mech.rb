@@ -269,9 +269,10 @@ class MagentoMech
     @mech.get order_url
     @mech.page.search('tr.border').map do |tr|
       product_name = tr.children[1].children[0].content
-      product_sku = tr.children[3].children[0].content
-      product_qty = tr.children[7].children[1].content[/\d+/]
-      [product_name, product_sku, product_qty]
+      product_sku  = tr.children[3].children[0].content
+      product_qty  = tr.children[7].children[1].content[/\d+/] # "Ordered:
+      refunded_qty = tr.children[7].children[1].content[/(?<=Refunded: )\d+/].to_i
+      [product_name, product_sku, product_qty, refunded_qty]
     end
   end
 
