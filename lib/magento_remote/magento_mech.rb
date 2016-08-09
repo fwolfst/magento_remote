@@ -243,7 +243,7 @@ class MagentoMech
     @mech.page.search('#my-orders-table tbody tr').map do |order_row|
       # We should remove the span labels
       row_columns = order_row.search("td")
-      [row_columns[1].text, row_columns[3].text, row_columns[5].search("a").first[:href], row_columns[0].text, row_columns[4].text]
+      [row_columns[1].text, row_columns[3].text, row_columns[5].search("a").first[:href], row_columns[0].text[/\d+/], row_columns[4].text]
     end
   end
 
