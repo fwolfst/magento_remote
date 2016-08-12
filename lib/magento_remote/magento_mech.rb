@@ -61,7 +61,14 @@ class MagentoMech
        qty: qty}
 
     result = JSON.parse result_page.content
-    return !result["outStock"]
+
+    if result["outStock"]
+      return false
+    elsif result["message"].include? "error-msg"
+      return false
+    else
+      return true
+    end
   end
 
   # Put stuff in the cart.
