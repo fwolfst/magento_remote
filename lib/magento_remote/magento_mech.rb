@@ -11,6 +11,10 @@ class MagentoMech
   attr_accessor :pass
   attr_accessor :base_uri
 
+  class ProductNotFoundError < StandardError
+    def initialize(msg="Product not found!") ; end
+  end
+
   # Create Mech from hash
   # Argument conf
   #   values :base_uri, :user, :pass.
@@ -65,7 +69,11 @@ class MagentoMech
     if result["outStock"]
       return false
     elsif result["message"].include? "error-msg"
-      return false
+      if result["message"].include? "Product not found!"
+        raise ProductNotFoundError, "Product with id #{product_id} not found!"
+      else
+        return false
+      end
     else
       return true
     end
