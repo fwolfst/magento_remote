@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Login to a magento shop and do stuff.}
   spec.description   = %q{Allows ordering through a (defaultish) magento web page.}
   spec.homepage      = 'https://github.com/fwolfst/magento_remote'
-  spec.license       = "MIT"
+  spec.licenses      = ["MIT", "GPL-3.0+"]
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
