@@ -162,7 +162,7 @@ class MagentoMech
     login_page = @mech.get(URI.join @base_uri, "customer/account/login/")
 
     # Probably we could just send the POST directly.
-    form = login_page.form_with(:action => "#", :method => 'POST')
+    form = login_page.form_with(:id => "login-form")
     form.action = URI.join @base_uri, "customer/account/loginPost/"
     form.fields.find{|f| f.name == 'login[username]'}.value = username
     form.fields.find{|f| f.name == 'login[password]'}.value = password
