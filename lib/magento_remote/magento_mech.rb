@@ -34,8 +34,9 @@ class MagentoMech
     @mech.agent.allowed_error_codes = [429]
 
     @mech.keep_alive = false
-    @mech.open_timeout = 5
-    @mech.read_timeout = 5
+    @mech.open_timeout = 10
+    @mech.read_timeout = 10
+    @mech.idle_timeout = 4
   end
 
   # Log to given file (-like object) or use logger.
