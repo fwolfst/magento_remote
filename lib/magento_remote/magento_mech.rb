@@ -283,7 +283,7 @@ class MagentoMech
   def products_from_order order_id
     order_url = relative_url("/sales/order/view/order_id/#{order_id}/")
     @mech.get order_url
-    @mech.page.search('tr.border').map do |tr|
+    @mech.page.search('tr.border').reject{|i| i['id'] =~ /order-item-gift-message/}.map do |tr|
       product_name = tr.children[1].children[0].content
       product_sku  = tr.children[3].children[0].content
       product_qty  = tr.children[7].children[1].content[/\d+/] # "Ordered:
